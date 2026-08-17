@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { AddSongButton } from '@/components/AddSongButton';
 import { PageHeader } from '@/components/PageHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { SongCard } from '@/components/SongCard';
@@ -86,7 +87,7 @@ export function SongsPage() {
 
   return (
     <div>
-      <PageHeader title="Todas as músicas" />
+      <PageHeader title="Todas as músicas" actions={<AddSongButton />} />
       <div className="space-y-4 px-4 py-4">
         <SearchBar value={query} onChange={setQuery} />
 

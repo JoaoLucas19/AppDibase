@@ -53,6 +53,41 @@ export function useRestoreKey() {
   });
 }
 
+export function useCreateSong() {
+  const { songs, blocks } = useRepositories();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: { title: string; originalKey: string; blockId?: string }) => {
+      const created = await songs.create({
+        title: input.title.trim(),
+        originalKey: input.originalKey,
+        artist: null,
+        lyrics: null,
+        chords: null,
+        notes: null,
+      });
+
+      if (input.blockId) {
+        await blocks.addSong(input.blockId, created.id);
+      }
+
+      return { song: created, blockId: input.blockId };
+    },
+    onSuccess: ({ song, blockId }) => {
+      queryClient.setQueryData(queryKeys.songs, (current: Song[] | undefined) => {
+        const next = current ? [...current, song] : [song];
+        return next.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
+      });
+      queryClient.setQueryData(queryKeys.song(song.id), song);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.relations });
+      if (blockId) {
+        void queryClient.invalidateQueries({ queryKey: queryKeys.blockSongs(blockId) });
+      }
+    },
+  });
+}
+
 export function useCreateSetlist() {
   const { setlists } = useRepositories();
   const queryClient = useQueryClient();

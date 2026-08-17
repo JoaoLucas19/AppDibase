@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { AddSongButton } from '@/components/AddSongButton';
 import { PageHeader } from '@/components/PageHeader';
 import { SongCard } from '@/components/SongCard';
 import { EmptyState, ErrorState, LoadingState } from '@/components/States';
@@ -33,14 +34,17 @@ export function BlockDetailsPage() {
         backTo="/"
         backLabel="Repertório"
         actions={
-          firstSong ? (
-            <Link
-              to={showHref(firstSong.id, { type: 'block', id: block.id })}
-              className="min-h-11 rounded-xl bg-gold px-3 py-2 text-sm font-bold text-stage"
-            >
-              Show
-            </Link>
-          ) : null
+          <div className="flex items-center gap-2">
+            <AddSongButton blockId={block.id} />
+            {firstSong ? (
+              <Link
+                to={showHref(firstSong.id, { type: 'block', id: block.id })}
+                className="min-h-11 rounded-xl bg-gold px-3 py-2 text-sm font-bold text-stage"
+              >
+                Show
+              </Link>
+            ) : null}
+          </div>
         }
       />
       <div className="space-y-3 px-4 py-4">

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AddSongButton } from '@/components/AddSongButton';
 import { BlockCard } from '@/components/BlockCard';
+import { InstallAppCard } from '@/components/InstallAppCard';
 import { PageHeader } from '@/components/PageHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { SongCard } from '@/components/SongCard';
@@ -50,7 +52,10 @@ export function HomePage() {
 
   return (
     <div>
-      <PageHeader title="Repertório Dibase 🎵" />
+      <PageHeader
+        title="Repertório Dibase 🎵"
+        actions={<AddSongButton />}
+      />
       <div className="space-y-5 px-4 py-4">
         <SearchBar value={query} onChange={setQuery} />
 
@@ -70,6 +75,7 @@ export function HomePage() {
           </section>
         ) : (
           <>
+            <InstallAppCard />
             <div className="grid grid-cols-3 gap-2">
               <Link
                 to="/favorites"

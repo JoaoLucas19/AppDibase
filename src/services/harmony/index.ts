@@ -144,3 +144,29 @@ export function getPrimaryChords(key: string): string[] {
     .chords.filter((chord) => chord.primary)
     .map((chord) => chord.symbol);
 }
+
+const MAJOR_KEY_CHOICES = [
+  'C',
+  'C#',
+  'Db',
+  'D',
+  'D#',
+  'Eb',
+  'E',
+  'F',
+  'F#',
+  'Gb',
+  'G',
+  'G#',
+  'Ab',
+  'A',
+  'A#',
+  'Bb',
+  'B',
+] as const;
+
+export const KEY_CHOICES = [
+  ...MAJOR_KEY_CHOICES,
+  ...MAJOR_KEY_CHOICES.map((key) => `${key}m`),
+] as const;
+
