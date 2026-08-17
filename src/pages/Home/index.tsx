@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AddSongButton } from '@/components/AddSongButton';
 import { BlockCard } from '@/components/BlockCard';
+import { GroupLogo } from '@/components/GroupLogo';
 import { PageHeader } from '@/components/PageHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { SongCard } from '@/components/SongCard';
@@ -56,6 +57,7 @@ export function HomePage() {
         actions={<AddSongButton />}
       />
       <div className="space-y-5 px-4 py-4">
+        <GroupLogo />
         <SearchBar value={query} onChange={setQuery} />
 
         {searching ? (
