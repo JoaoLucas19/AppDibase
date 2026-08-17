@@ -1,4 +1,4 @@
-# Repertório da Banda
+# Repertório Dibase
 
 PWA de repertório para ensaios e shows. Funciona offline, no celular, sem depender de nenhum backend externo.
 
@@ -23,7 +23,7 @@ Crie um **projeto novo** no Railway, separado de qualquer outro aplicativo.
 1. Conecte este repositório.
 2. Build: `npm ci && npm run build`
 3. Start: `npm start`
-4. A URL pública ficará no estilo `https://repertorio-banda-production.up.railway.app`
+4. A URL pública ficará no estilo `https://repertorio-dibase-production.up.railway.app`
 
 Não utilize a API da Alcateia. Uma API própria só deve ser criada no futuro, neste mesmo projeto.
 

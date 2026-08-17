@@ -15,8 +15,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons/icon-192.png', 'icons/icon-512.png'],
       manifest: {
-        name: 'Repertório da Banda',
-        short_name: 'Repertório',
+        name: 'Repertório Dibase',
+        short_name: 'Dibase',
         description: 'Repertório de pagode para ensaios e apresentações ao vivo',
         theme_color: '#0a0a0c',
         background_color: '#0a0a0c',

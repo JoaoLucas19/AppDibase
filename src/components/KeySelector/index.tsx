@@ -1,3 +1,5 @@
+import { HarmonicFieldView } from '@/components/HarmonicField';
+import { describeKey } from '@/services/harmony';
 import { keysEqual } from '@/services/transpose';
 
 interface KeySelectorProps {
@@ -20,7 +22,7 @@ export function KeySelector({
   const changed = !keysEqual(originalKey, currentKey);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-center gap-4">
         <button
           type="button"
@@ -30,9 +32,9 @@ export function KeySelector({
         >
           −
         </button>
-        <div className="min-w-20 text-center">
+        <div className="min-w-24 text-center">
           <p className={`font-bold text-gold ${large ? 'text-4xl' : 'text-3xl'}`}>{currentKey}</p>
-          <p className="text-xs text-mute">Tom atual</p>
+          <p className="text-xs text-mute">{describeKey(currentKey)}</p>
         </div>
         <button
           type="button"
@@ -54,6 +56,7 @@ export function KeySelector({
       ) : (
         <p className="text-center text-sm text-mute">Tom original: {originalKey}</p>
       )}
+      <HarmonicFieldView musicalKey={currentKey} compact={large} />
     </div>
   );
 }

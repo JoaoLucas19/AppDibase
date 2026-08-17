@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Song } from '@/domain';
+import { getPrimaryChords } from '@/services/harmony';
 
 interface SongCardProps {
   song: Song;
@@ -9,6 +10,13 @@ interface SongCardProps {
 }
 
 export function SongCard({ song, href, order, meta }: SongCardProps) {
+  let primary = '';
+  try {
+    primary = getPrimaryChords(song.currentKey).join(' · ');
+  } catch {
+    primary = '';
+  }
+
   return (
     <Link
       to={href}
@@ -28,7 +36,9 @@ export function SongCard({ song, href, order, meta }: SongCardProps) {
             </span>
           ) : null}
         </span>
-        {meta ? <span className="block truncate text-sm text-mute">{meta}</span> : null}
+        <span className="block truncate text-sm text-mute">
+          {meta ?? (primary || song.currentKey)}
+        </span>
       </span>
       <span className="shrink-0 rounded-full bg-gold/15 px-3 py-1 text-sm font-bold text-gold">
         {song.currentKey}

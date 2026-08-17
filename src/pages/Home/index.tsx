@@ -50,7 +50,7 @@ export function HomePage() {
 
   return (
     <div>
-      <PageHeader title="Repertório 🎵" />
+      <PageHeader title="Repertório Dibase 🎵" />
       <div className="space-y-5 px-4 py-4">
         <SearchBar value={query} onChange={setQuery} />
 
