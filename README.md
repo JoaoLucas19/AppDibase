@@ -21,9 +21,10 @@ npm start
 Crie um **projeto novo** no Railway, separado de qualquer outro aplicativo.
 
 1. Conecte este repositório.
-2. Build: `npm ci && npm run build`
-3. Start: `npm start`
-4. A URL pública ficará no estilo `https://repertorio-dibase-production.up.railway.app`
+2. No serviço **web**, em **Settings → Build**, escolha o builder **Dockerfile**.
+3. Em **Settings → Deploy**, no **Custom Start Command**, apague `npm start` e deixe `node server.mjs`.
+4. Faça Redeploy.
+5. Em **Networking**, gere o domínio público.
 
 Não utilize a API da Alcateia. Uma API própria só deve ser criada no futuro, neste mesmo projeto.
 
