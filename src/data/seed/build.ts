@@ -45,6 +45,7 @@ export function buildSeed(rawBlocks: SeedBlockEntry[]): RepertoireSeed {
           lyrics: null,
           chords: null,
           notes: null,
+          improvCue: null,
           favorite: false,
         });
       }

@@ -17,6 +17,7 @@ export function SongEditor({ song, pending = false, onCancel, onSave }: SongEdit
   const [chords, setChords] = useState(song.chords ?? '');
   const [lyrics, setLyrics] = useState(song.lyrics ?? '');
   const [notes, setNotes] = useState(song.notes ?? '');
+  const [improvCue, setImprovCue] = useState(song.improvCue ?? '');
 
   useEffect(() => {
     setTitle(song.title);
@@ -25,6 +26,7 @@ export function SongEditor({ song, pending = false, onCancel, onSave }: SongEdit
     setChords(song.chords ?? '');
     setLyrics(song.lyrics ?? '');
     setNotes(song.notes ?? '');
+    setImprovCue(song.improvCue ?? '');
   }, [song]);
 
   return (
@@ -44,6 +46,7 @@ export function SongEditor({ song, pending = false, onCancel, onSave }: SongEdit
           chords: chords.trim() || null,
           lyrics: lyrics.trim() || null,
           notes: notes.trim() || null,
+          improvCue: improvCue.trim() || null,
         });
       }}
     >
@@ -107,6 +110,16 @@ export function SongEditor({ song, pending = false, onCancel, onSave }: SongEdit
           onChange={(event) => setNotes(event.target.value)}
           rows={3}
           placeholder="Entrada, ponte, quem puxa o coro..."
+          className="w-full rounded-xl border border-stage-border bg-stage px-3 py-3 text-sm"
+        />
+      </label>
+      <label className="block">
+        <span className="mb-1 block text-sm text-mute">Dica da gracinha / pausa</span>
+        <textarea
+          value={improvCue}
+          onChange={(event) => setImprovCue(event.target.value)}
+          rows={3}
+          placeholder="Ex.: Pausa depois do segundo refrão. Cada um faz uma gracinha e o último fecha no V7."
           className="w-full rounded-xl border border-stage-border bg-stage px-3 py-3 text-sm"
         />
       </label>

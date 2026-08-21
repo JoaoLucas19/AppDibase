@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { ImprovPhrases } from '@/components/ImprovPhrases';
 import { KeySelector } from '@/components/KeySelector';
 import { PageHeader } from '@/components/PageHeader';
 import { SongContent } from '@/components/SongContent';
@@ -178,6 +179,12 @@ export function SongDetailsPage() {
                 updateKey.mutate({ id: song.id, key: transposeDown(song.currentKey) })
               }
               onRestore={() => restoreKey.mutate(song.id)}
+            />
+
+            <ImprovPhrases
+              musicalKey={song.currentKey}
+              songTitle={song.title}
+              customCue={song.improvCue}
             />
 
             <Link

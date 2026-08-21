@@ -7,6 +7,7 @@ export interface Song {
   lyrics?: string | null;
   chords?: string | null;
   notes?: string | null;
+  improvCue?: string | null;
   favorite: boolean;
 }
 

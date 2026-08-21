@@ -123,6 +123,7 @@ export function useCreateSong() {
         lyrics: null,
         chords: null,
         notes: null,
+        improvCue: null,
       });
 
       if (input.blockId) {

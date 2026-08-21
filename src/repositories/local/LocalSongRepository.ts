@@ -31,6 +31,7 @@ export class LocalSongRepository implements SongRepository {
       lyrics: draft.lyrics ?? null,
       chords: draft.chords ?? null,
       notes: draft.notes ?? null,
+      improvCue: draft.improvCue ?? null,
       favorite: draft.favorite ?? false,
     };
     await idbPut(STORES.songs, song);

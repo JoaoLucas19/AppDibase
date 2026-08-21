@@ -145,6 +145,30 @@ export function getPrimaryChords(key: string): string[] {
     .map((chord) => chord.symbol);
 }
 
+export function toSolfege(note: string): string {
+  return SOLFEGE[note] ?? note;
+}
+
+export function getScaleSpellings(key: string): string[] {
+  const parsed = parseDisplayKey(key);
+  const intervals = parsed.minor ? MINOR_INTERVALS : MAJOR_INTERVALS;
+  return intervals.map((interval, index) =>
+    spellScaleNote(parsed.letter, parsed.accidental, interval, index),
+  );
+}
+
+export function getPentatonicSpellings(key: string): string[] {
+  const scale = getScaleSpellings(key);
+  const parsed = parseDisplayKey(key);
+  const indexes = parsed.minor ? [0, 2, 3, 4, 6] : [0, 1, 2, 4, 5];
+  return indexes.map((index) => scale[index] ?? scale[0] ?? 'C');
+}
+
+export function getDominantSeventh(key: string): string {
+  const fifth = getScaleSpellings(key)[4] ?? 'G';
+  return `${fifth}7`;
+}
+
 const MAJOR_KEY_CHOICES = [
   'C',
   'C#',

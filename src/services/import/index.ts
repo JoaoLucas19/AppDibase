@@ -52,6 +52,7 @@ export function rowsToSeed(rows: ImportedRow[]): RepertoireSeed {
           lyrics: null,
           chords: null,
           notes: null,
+          improvCue: null,
           favorite: false,
         });
       }

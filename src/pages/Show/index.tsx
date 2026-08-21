@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AutoScroll } from '@/components/AutoScroll';
+import { ImprovPhrases } from '@/components/ImprovPhrases';
 import { KeySelector } from '@/components/KeySelector';
 import { SongContent } from '@/components/SongContent';
 import { SongNavigation } from '@/components/SongNavigation';
@@ -159,7 +160,15 @@ export function ShowPage() {
         className="min-h-0 flex-1 overflow-y-auto px-4 py-4"
         {...swipe}
       >
-        <SongContent song={song} large fontSize={fontSize} />
+        <div className="space-y-4">
+          <ImprovPhrases
+            musicalKey={song.currentKey}
+            songTitle={song.title}
+            customCue={song.improvCue}
+            compact
+          />
+          <SongContent song={song} large fontSize={fontSize} />
+        </div>
       </div>
 
       <div className="space-y-3 border-t border-stage-border bg-stage px-4 py-3">
