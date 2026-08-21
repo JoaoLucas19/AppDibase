@@ -54,7 +54,18 @@ export function HomePage() {
     <div>
       <PageHeader
         title="Repertório Dibase 🎵"
-        actions={<AddSongButton />}
+        actions={
+          <div className="flex items-center gap-2">
+            <Link
+              to="/settings"
+              aria-label="Ajustes"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-stage-elevated text-lg"
+            >
+              ⚙️
+            </Link>
+            <AddSongButton />
+          </div>
+        }
       />
       <div className="space-y-5 px-4 py-4">
         <GroupLogo />

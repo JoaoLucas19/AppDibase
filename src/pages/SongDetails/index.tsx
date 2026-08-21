@@ -1,14 +1,21 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { KeySelector } from '@/components/KeySelector';
 import { PageHeader } from '@/components/PageHeader';
 import { SongContent } from '@/components/SongContent';
+import { SongEditor } from '@/components/SongEditor';
 import { SongNavigation } from '@/components/SongNavigation';
 import { EmptyState, ErrorState, LoadingState } from '@/components/States';
 import { getNeighbors, buildPlaylist } from '@/domain/playlists';
 import { useRelations, useSetlist, useSongs } from '@/hooks/useCatalog';
-import { useRestoreKey, useToggleFavorite, useUpdateKey } from '@/hooks/useMutations';
+import {
+  useDeleteSong,
+  useRestoreKey,
+  useToggleFavorite,
+  useUpdateKey,
+  useUpdateSong,
+} from '@/hooks/useMutations';
 import { transposeDown, transposeUp } from '@/services/transpose';
 import { showHref, songHref } from '@/utils/routes';
 import type { PlayContextType } from '@/domain';
@@ -57,6 +64,9 @@ export function SongDetailsPage() {
   const toggleFavorite = useToggleFavorite();
   const updateKey = useUpdateKey();
   const restoreKey = useRestoreKey();
+  const updateSong = useUpdateSong();
+  const deleteSong = useDeleteSong();
+  const [editing, setEditing] = useState(false);
 
   const song = useMemo(
     () => songsQuery.data?.find((item) => item.id === songId),
@@ -78,7 +88,7 @@ export function SongDetailsPage() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (!song) return;
+      if (!song || editing) return;
       if (event.key === 'ArrowLeft') {
         const prevId = neighbors.prev?.id;
         if (prevId) void navigate(songHref(prevId, { type: context.type, id: context.id }));
@@ -99,6 +109,7 @@ export function SongDetailsPage() {
   }, [
     context.id,
     context.type,
+    editing,
     navigate,
     neighbors.next?.id,
     neighbors.prev?.id,
@@ -123,46 +134,89 @@ export function SongDetailsPage() {
     void navigate(songHref(id, { type: context.type, id: context.id }));
   };
 
+  const remove = async () => {
+    const confirmed = window.confirm(`Excluir "${song.title}" do repertório?`);
+    if (!confirmed) return;
+    await deleteSong.mutateAsync(song.id);
+    void navigate(context.backTo);
+  };
+
   return (
     <div>
       <PageHeader
         title={song.title}
         backTo={context.backTo}
         backLabel={context.backLabel}
-        actions={<FavoriteButton song={song} onToggle={() => toggleFavorite.mutate(song.id)} />}
+        actions={
+          <FavoriteButton song={song} onToggle={() => toggleFavorite.mutate(song.id)} />
+        }
       />
       <div className="space-y-6 px-4 py-4">
         {song.artist ? <p className="text-mute">{song.artist}</p> : null}
 
-        <KeySelector
-          originalKey={song.originalKey}
-          currentKey={song.currentKey}
-          onUp={() =>
-            updateKey.mutate({ id: song.id, key: transposeUp(song.currentKey) })
-          }
-          onDown={() =>
-            updateKey.mutate({ id: song.id, key: transposeDown(song.currentKey) })
-          }
-          onRestore={() => restoreKey.mutate(song.id)}
-        />
+        {editing ? (
+          <SongEditor
+            song={song}
+            pending={updateSong.isPending}
+            onCancel={() => setEditing(false)}
+            onSave={(patch) => {
+              updateSong.mutate(
+                { id: song.id, patch },
+                { onSuccess: () => setEditing(false) },
+              );
+            }}
+          />
+        ) : (
+          <>
+            <KeySelector
+              originalKey={song.originalKey}
+              currentKey={song.currentKey}
+              onUp={() =>
+                updateKey.mutate({ id: song.id, key: transposeUp(song.currentKey) })
+              }
+              onDown={() =>
+                updateKey.mutate({ id: song.id, key: transposeDown(song.currentKey) })
+              }
+              onRestore={() => restoreKey.mutate(song.id)}
+            />
 
-        <Link
-          to={showHref(song.id, { type: context.type, id: context.id })}
-          className="flex min-h-14 items-center justify-center rounded-2xl bg-gold text-base font-bold text-stage"
-        >
-          🎤 Modo Show
-        </Link>
+            <Link
+              to={showHref(song.id, { type: context.type, id: context.id })}
+              className="flex min-h-14 items-center justify-center rounded-2xl bg-gold text-base font-bold text-stage"
+            >
+              🎤 Modo Show
+            </Link>
 
-        <div className="h-px bg-stage-border" />
-        <SongContent song={song} />
-        <div className="h-px bg-stage-border" />
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="min-h-12 rounded-xl bg-stage-elevated font-semibold"
+              >
+                Editar cifra
+              </button>
+              <button
+                type="button"
+                onClick={() => void remove()}
+                disabled={deleteSong.isPending}
+                className="min-h-12 rounded-xl bg-stage-elevated font-semibold text-danger"
+              >
+                Excluir
+              </button>
+            </div>
 
-        <SongNavigation
-          onPrev={() => go(neighbors.prev?.id)}
-          onNext={() => go(neighbors.next?.id)}
-          hasPrev={Boolean(neighbors.prev)}
-          hasNext={Boolean(neighbors.next)}
-        />
+            <div className="h-px bg-stage-border" />
+            <SongContent song={song} />
+            <div className="h-px bg-stage-border" />
+
+            <SongNavigation
+              onPrev={() => go(neighbors.prev?.id)}
+              onNext={() => go(neighbors.next?.id)}
+              hasPrev={Boolean(neighbors.prev)}
+              hasNext={Boolean(neighbors.next)}
+            />
+          </>
+        )}
       </div>
     </div>
   );

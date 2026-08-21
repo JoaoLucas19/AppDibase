@@ -53,6 +53,63 @@ export function useRestoreKey() {
   });
 }
 
+export function useUpdateSong() {
+  const { songs } = useRepositories();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: Partial<Omit<Song, 'id'>>;
+    }) => songs.update(id, patch),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(queryKeys.songs, (current: Song[] | undefined) =>
+        replaceSong(current, updated),
+      );
+      queryClient.setQueryData(queryKeys.song(updated.id), updated);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.relations });
+    },
+  });
+}
+
+export function useDeleteSong() {
+  const { songs, blocks, setlists } = useRepositories();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const relations = await blocks.getRelations();
+      await Promise.all(
+        relations
+          .filter((item) => item.songId === id)
+          .map((item) => blocks.removeSong(item.blockId, id)),
+      );
+
+      const allSetlists = await setlists.getAll();
+      await Promise.all(
+        allSetlists
+          .filter((item) => item.songIds.includes(id))
+          .map((item) => setlists.removeSong(item.id, id)),
+      );
+
+      await songs.delete(id);
+      return id;
+    },
+    onSuccess: (id) => {
+      queryClient.setQueryData(queryKeys.songs, (current: Song[] | undefined) =>
+        current?.filter((song) => song.id !== id),
+      );
+      queryClient.removeQueries({ queryKey: queryKeys.song(id) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.relations });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.blocks });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.setlists });
+    },
+  });
+}
+
 export function useCreateSong() {
   const { songs, blocks } = useRepositories();
   const queryClient = useQueryClient();

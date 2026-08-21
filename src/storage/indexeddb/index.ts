@@ -8,6 +8,7 @@ export {
   idbGetAll,
   idbPut,
   idbPutAll,
+  idbReplaceAll,
   setMeta,
   STORES,
 } from './db';

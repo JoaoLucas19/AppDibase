@@ -89,6 +89,17 @@ export async function idbPutAll<T>(storeName: string, values: T[]): Promise<void
   await transactionDone(tx);
 }
 
+export async function idbReplaceAll<T>(storeName: string, values: T[]): Promise<void> {
+  const db = await getDb();
+  const tx = db.transaction(storeName, 'readwrite');
+  const store = tx.objectStore(storeName);
+  store.clear();
+  for (const value of values) {
+    store.put(value);
+  }
+  await transactionDone(tx);
+}
+
 export async function idbDelete(storeName: string, key: IDBValidKey): Promise<void> {
   const db = await getDb();
   const tx = db.transaction(storeName, 'readwrite');

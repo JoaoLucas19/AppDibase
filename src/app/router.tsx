@@ -7,6 +7,7 @@ import { HomePage } from '@/pages/Home';
 import { SetlistDetailsPage } from '@/pages/SetlistDetails';
 import { SetlistEditPage } from '@/pages/SetlistEdit';
 import { SetlistsPage } from '@/pages/Setlists';
+import { SettingsPage } from '@/pages/Settings';
 import { ShowPage } from '@/pages/Show';
 import { SongDetailsPage } from '@/pages/SongDetails';
 import { SongsPage } from '@/pages/Songs';
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
       { path: '/setlists/:setlistId', element: <SetlistDetailsPage /> },
       { path: '/setlists/:setlistId/edit', element: <SetlistEditPage /> },
       { path: '/setlists/:setlistId/songs/:songId', element: <SongDetailsPage /> },
+      { path: '/settings', element: <SettingsPage /> },
     ],
   },
   {

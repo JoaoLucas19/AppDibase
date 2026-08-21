@@ -10,7 +10,9 @@ import { buildPlaylist, getNeighbors } from '@/domain/playlists';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
 import { useRelations, useSetlist, useSongs } from '@/hooks/useCatalog';
 import { useRestoreKey, useToggleFavorite, useUpdateKey } from '@/hooks/useMutations';
+import { useShowPreferences } from '@/hooks/useShowPreferences';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { useWakeLock } from '@/hooks/useWakeLock';
 import { transposeDown, transposeUp } from '@/services/transpose';
 import { showHref, songHref } from '@/utils/routes';
 
@@ -33,6 +35,8 @@ export function ShowPage() {
   const toggleFavorite = useToggleFavorite();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toggle, running, speed, setSpeed, start, pause } = useAutoScroll(scrollRef);
+  const { fontSize, smaller, larger } = useShowPreferences();
+  useWakeLock(true);
 
   const playlist = useMemo(
     () =>
@@ -91,11 +95,13 @@ export function ShowPage() {
       if (event.key.toLowerCase() === 's') {
         toggle();
       }
+      if (event.key === '[') smaller();
+      if (event.key === ']') larger();
     };
 
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, neighbors?.next?.id, neighbors?.prev?.id, song, toggle, updateKey]);
+  }, [go, larger, neighbors?.next?.id, neighbors?.prev?.id, smaller, song, toggle, updateKey]);
 
   if (songsQuery.isLoading || relationsQuery.isLoading) return <LoadingState />;
   if (songsQuery.isError) return <ErrorState message="Não foi possível abrir o Modo Show." />;
@@ -153,10 +159,29 @@ export function ShowPage() {
         className="min-h-0 flex-1 overflow-y-auto px-4 py-4"
         {...swipe}
       >
-        <SongContent song={song} large />
+        <SongContent song={song} large fontSize={fontSize} />
       </div>
 
       <div className="space-y-3 border-t border-stage-border bg-stage px-4 py-3">
+        <div className="flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={smaller}
+            aria-label="Diminuir letra"
+            className="min-h-12 min-w-12 rounded-xl bg-stage-elevated text-xl font-bold text-gold"
+          >
+            A-
+          </button>
+          <span className="min-w-16 text-center text-sm text-mute">{fontSize}px</span>
+          <button
+            type="button"
+            onClick={larger}
+            aria-label="Aumentar letra"
+            className="min-h-12 min-w-12 rounded-xl bg-stage-elevated text-xl font-bold text-gold"
+          >
+            A+
+          </button>
+        </div>
         <AutoScroll
           running={running}
           speed={speed}
